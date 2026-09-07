@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI: string = process.env.MONGODB_URI ?? "";
 
 if (!MONGODB_URI) {
-  throw new Error("MONGODB_URI is not defined in .env.local");
+  throw new Error("MONGODB_URI is not defined");
 }
 
 let cached = (global as typeof globalThis & {
@@ -30,9 +30,7 @@ export async function connectDB() {
   }
 
   if (!cached?.promise) {
-    cached!.promise = mongoose.connect(MONGODB_URI).then((mongooseInstance) => {
-      return mongooseInstance;
-    });
+    cached!.promise = mongoose.connect(MONGODB_URI);
   }
 
   cached!.conn = await cached!.promise;
