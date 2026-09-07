@@ -3,10 +3,14 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-const router = useRouter();
+
+  const router = useRouter();
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -14,8 +18,18 @@ const router = useRouter();
       email,
       password,
     });
-router.push("/dashboard");
-    // Authentication will be connected later
+
+    router.push("/dashboard");
+  };
+
+  const handleGoogleLogin = async () => {
+    await signIn("google", {
+      callbackUrl: "/dashboard",
+    });
+  };
+
+  const handleOTPLogin = () => {
+    router.push("/login/otp");
   };
 
   return (
@@ -40,6 +54,7 @@ router.push("/dashboard");
       {/* Login Section */}
       <section className="flex min-h-[calc(100vh-100px)] items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
+
           {/* Heading */}
           <div className="text-center">
             <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-black text-sm font-medium text-white">
@@ -61,7 +76,10 @@ router.push("/dashboard");
 
           {/* Login Card */}
           <div className="mt-10 rounded-[2rem] border border-black/10 bg-white p-7 shadow-[0_20px_60px_rgba(0,0,0,0.06)] sm:p-9">
+
+            {/* Email / Password Login */}
             <form onSubmit={handleLogin} className="space-y-5">
+
               {/* Email */}
               <div>
                 <label className="mb-2 block text-sm font-medium">
@@ -115,22 +133,41 @@ router.push("/dashboard");
             {/* Divider */}
             <div className="my-7 flex items-center gap-4">
               <div className="h-px flex-1 bg-black/10" />
-              <span className="text-xs text-[#999999]">OR</span>
+
+              <span className="text-xs text-[#999999]">
+                OR
+              </span>
+
               <div className="h-px flex-1 bg-black/10" />
             </div>
 
-            {/* Demo Login */}
+            {/* OTP Login */}
             <button
               type="button"
-              className="w-full rounded-full border border-black/10 bg-white px-5 py-3.5 text-sm font-medium transition hover:bg-black/5"
+              onClick={handleOTPLogin}
+              className="w-full rounded-full border border-black/10 bg-[#f8f8f6] px-5 py-3.5 text-sm font-medium transition hover:bg-black/5"
             >
-              Continue with Demo Account
+              Login with 6-digit code
+            </button>
+
+            {/* Google Login */}
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="mt-3 flex w-full items-center justify-center gap-3 rounded-full border border-black/10 bg-white px-5 py-3.5 text-sm font-medium transition hover:bg-black/5"
+            >
+              <span className="text-lg font-semibold">
+                G
+              </span>
+
+              Continue with Google
             </button>
           </div>
 
           {/* Signup */}
           <p className="mt-7 text-center text-sm text-[#666666]">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
+
             <Link
               href="/signup"
               className="font-medium text-black underline underline-offset-4"
@@ -138,6 +175,7 @@ router.push("/dashboard");
               Create one
             </Link>
           </p>
+
         </div>
       </section>
     </main>
